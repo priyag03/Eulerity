@@ -8,90 +8,103 @@
       font-family: Arial, sans-serif;
       padding: 20px;
     }
-
-    h1 {
-      margin-bottom: 10px;
-    }
-
     input[type="text"] {
       width: 400px;
       padding: 8px;
       font-size: 16px;
     }
-
     button {
       padding: 8px 16px;
       font-size: 16px;
       margin-left: 10px;
       cursor: pointer;
     }
-
     #results {
       margin-top: 20px;
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
     }
-
-    #results img {
+    .image-container {
+      width: 120px;
+      text-align: center;
+    }
+    .image-container img {
       height: 120px;
+      width: 120px;
+      object-fit: contain;
       border-radius: 6px;
       box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .image-container p {
+      font-size: 10px;
+      word-break: break-all;
+      margin-top: 4px;
     }
   </style>
 </head>
 <body>
 
-  <h1>Image Crawler</h1>
-  <div>
-    <input type="text" name="url" placeholder="Enter website URL" value="https://www.pexels.com">
-    <button id="submit">Submit</button>
-  </div>
+<h1>Image Crawler</h1>
+<div>
+  <input type="text" name="url" placeholder="Enter website URL" value="https://www.walmart.com/">
+  <button id="submit">Submit</button>
+</div>
 
-  <div id="results"></div>
+<div id="results"></div>
 
-  <script>
-    const input = document.querySelector('input[name="url"]');
-    const button = document.getElementById('submit');
-    const results = document.getElementById('results');
+<script>
+  const input = document.querySelector('input[name="url"]');
+  const button = document.getElementById('submit');
+  const results = document.getElementById('results');
 
-    const makeApiCall = function (url, method, body, callback) {
-      const xhr = new XMLHttpRequest();
-      xhr.open(method, url);
-      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-          if (xhr.status === 200) {
-            const images = JSON.parse(xhr.responseText);
-            callback(images);
-          } else {
-            results.innerHTML = `<p style="color:red;">❌ ${xhr.status}: ${xhr.statusText}</p>`;
-          }
+  const makeApiCall = function (url, method, body, callback) {
+    const xhr = new XMLHttpRequest();
+    xhr.open(method, url);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          const images = JSON.parse(xhr.responseText);
+          callback(images);
+        } else {
+          results.innerHTML = `<p style="color:red;">❌ ${xhr.status}: ${xhr.statusText}</p>`;
         }
-      };
-      xhr.send(body);
-    };
-
-    const updateList = function (images) {
-      results.innerHTML = '';
-      if (images.length === 0) {
-        results.innerHTML = '<p>⚠️ No images found.</p>';
-        return;
       }
-      images.forEach(src => {
-        const img = document.createElement('img');
-        img.src = src;
-        results.appendChild(img);
-      });
     };
+    xhr.send(body);
+  };
 
-    button.addEventListener('click', function (e) {
-      e.preventDefault();
-      results.innerHTML = '⏳ Crawling...';
-      const body = `url=${encodeURIComponent(input.value)}`;
-      makeApiCall('/main', 'POST', body, updateList);
+  const updateList = function (images) {
+    results.innerHTML = '';
+    if (images.length === 0) {
+      results.innerHTML = '<p>⚠️ No images found.</p>';
+      return;
+    }
+    images.forEach(imgObj => {
+      const container = document.createElement('div');
+      container.className = 'image-container';
+
+      const img = document.createElement('img');
+      img.src = imgObj.url;
+      img.alt = "Crawled image";
+
+      const label = document.createElement('p');
+      label.textContent = imgObj.xpath;
+
+      container.appendChild(img);
+      container.appendChild(label);
+      results.appendChild(container);
     });
-  </script>
+  };
+
+  button.addEventListener('click', function (e) {
+    e.preventDefault();
+    results.innerHTML = '⏳ Crawling...';
+    const body = `url=${encodeURIComponent(input.value)}`;
+    makeApiCall('/main', 'POST', body, updateList);
+  });
+</script>
 
 </body>
 </html>
