@@ -58,53 +58,44 @@
   const button = document.getElementById('submit');
   const results = document.getElementById('results');
 
-  const makeApiCall = function (url, method, body, callback) {
-    const xhr = new XMLHttpRequest();
-    xhr.open(method, url);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === XMLHttpRequest.DONE) {
-        if (xhr.status === 200) {
-          const images = JSON.parse(xhr.responseText);
-          callback(images);
-        } else {
-          results.innerHTML = `<p style="color:red;">❌ ${xhr.status}: ${xhr.statusText}</p>`;
-        }
-      }
-    };
-    xhr.send(body);
-  };
-
-  const updateList = function (images) {
-    results.innerHTML = '';
-    if (images.length === 0) {
-      results.innerHTML = '<p>⚠️ No images found.</p>';
-      return;
-    }
-    images.forEach(imgObj => {
-      const container = document.createElement('div');
-      container.className = 'image-container';
-
-      const img = document.createElement('img');
-      img.src = imgObj.url;
-      img.alt = "Crawled image";
-
-      const label = document.createElement('p');
-      label.textContent = imgObj.xpath;
-
-      container.appendChild(img);
-      container.appendChild(label);
-      results.appendChild(container);
-    });
-  };
-
   button.addEventListener('click', function (e) {
     e.preventDefault();
     results.innerHTML = '⏳ Crawling...';
-    const body = `url=${encodeURIComponent(input.value)}`;
-    makeApiCall('/main', 'POST', body, updateList);
+    const urlValue = input.value.trim();
+    if (!urlValue) return;
+
+    results.innerHTML = '';
+
+    const eventSource = new EventSource(`/stream?url=${encodeURIComponent(urlValue)}`);
+
+    eventSource.onmessage = function (event) {
+      try {
+        const imgObj = JSON.parse(event.data);
+        const container = document.createElement('div');
+        container.className = 'image-container';
+
+        const img = document.createElement('img');
+        img.src = imgObj.url;
+        img.alt = "Crawled image";
+
+        const label = document.createElement('p');
+        label.textContent = imgObj.xpath;
+
+        container.appendChild(img);
+        container.appendChild(label);
+        results.appendChild(container);
+      } catch (e) {
+        console.error("⚠️ Error parsing streamed image:", e);
+      }
+    };
+
+    eventSource.onerror = function () {
+      console.log("❌ Streaming finished or error occurred.");
+      eventSource.close();
+    };
   });
 </script>
+
 
 </body>
 </html>
