@@ -29,12 +29,36 @@
     <artifactId>selenium-java</artifactId>
     <version>3.141.59</version> <!-- works with Java 8 -->
 </dependency>
+<dependency>
+    <groupId>com.microsoft.playwright</groupId>
+    <artifactId>playwright</artifactId>
+    <version>1.41.0</version>  <!-- latest stable -->
+</dependency>
+<dependency>
+  <groupId>org.eclipse.jetty.websocket</groupId>
+  <artifactId>websocket-server</artifactId>
+  <version>9.4.43.v20210629</version>
+</dependency>
+<dependency>
+    <groupId>javax.websocket</groupId>
+    <artifactId>javax.websocket-api</artifactId>
+    <version>1.1</version>  <!-- 1.1 is stable for Java 8 -->
+</dependency>
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.14.0</version> <!-- or any stable version -->
+</dependency>
 
+<dependency>
+        <groupId>com.sparkjava</groupId>
+        <artifactId>spark-core</artifactId>
+        <version>2.9.3</version>
+    </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <version>4.0.1</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>javax.servlet.jsp</groupId>
@@ -42,6 +66,23 @@
       <version>2.3.3</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+  <groupId>org.eclipse.jetty</groupId>
+  <artifactId>jetty-server</artifactId>
+  <version>9.4.44.v20210927</version>
+</dependency>
+<dependency>
+    <groupId>org.json</groupId>
+    <artifactId>json</artifactId>
+    <version>20220320</version>
+</dependency>
+
+<dependency>
+  <groupId>org.eclipse.jetty</groupId>
+  <artifactId>jetty-servlet</artifactId>
+  <version>9.4.44.v20210927</version>
+</dependency>
+
     <dependency>
       <groupId>jstl</groupId>
       <artifactId>jstl</artifactId>
@@ -130,7 +171,10 @@
             </goals>
           </execution>
         </executions>
-      </plugin> 
+      </plugin>
+     
+
+ 
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
