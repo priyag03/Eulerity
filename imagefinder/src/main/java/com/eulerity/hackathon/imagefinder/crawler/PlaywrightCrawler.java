@@ -60,6 +60,8 @@ public class PlaywrightCrawler implements WebCrawler {
         System.out.println("\n===================================");
         System.out.println("✅ TOTAL UNIQUE IMAGES FOUND: " + collectedImages.size());
         System.out.println("===================================");
+        CrawlWebSocketServer.broadcastImage("__CRAWL_DONE__");
+
     }
 
     // 🛑 Crawl Main Page Using Same Session
@@ -105,14 +107,14 @@ System.out.println("⏱️ Time taken to crawl URL: " + url + " = " + timeTakenM
 
     // 🛑 Scroll for lazy loading
     private void scrollPage(Page page) {
-        int maxScrolls = 30;
-        for (int i = 0; i < maxScrolls; i++) {
-            page.evaluate("window.scrollBy(0, window.innerHeight)");
-            page.waitForTimeout(1500); // 1.5 seconds after each scroll
-        }
-        // 🛑 After scrolling fully, wait more to allow lazy images to load
-        page.waitForTimeout(5000); // wait 5 seconds extra
+    int maxScrolls = 8; // 🔥 Reduce from 30 → 8
+    for (int i = 0; i < maxScrolls; i++) {
+        page.evaluate("window.scrollBy(0, window.innerHeight)");
+        page.waitForTimeout(500); // 🔥 Reduce wait to 500 ms (was 1500 ms)
     }
+    page.waitForTimeout(1000); // 🔥 Reduce final wait to 1 sec (was 5 sec)
+}
+
 
     // 🛑 Extract images from the current page
     private Set<String> collectImagesFromPage(Page page, String baseUrl) {
