@@ -1,0 +1,11 @@
+Please paste your list of test URLs below:
+
+1) https://books.toscrape.com/
+2) https://www.amazon.com/
+3) https://www.walmart.com/
+4) https://www.ikea.com/us/en/
+5) https://www.apple.com/
+6) https://www.nasa.gov/images/
+7) https://www.flipkart.com/
+8) https://www.nasa.gov/
+9) https://www.nike.com/
